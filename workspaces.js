@@ -26,7 +26,7 @@
     $('dataBadge').textContent=data.length?`${data.length} records verified`:'No workbook loaded';
     $('uploadErrors').replaceChildren(...state.errorNodes.map(node=>node.cloneNode(true)));$('uploadErrors').hidden=!uploadIssues.length;$('downloadIssues').hidden=!uploadIssues.length;syncScenarios();buildBands();render();updateTimer();
   }
-  function setView(next) {
+  function setView(next, focusHeading = true) {
     $('flowStatus').textContent='';
     if(['students','analysis','decision'].includes(next)&&!rowsForCourse().length)next='import';
     if(next==='decision'&&G.validateRanges(ranges)){next='analysis';$('flowStatus').textContent='Review the highlighted grade boundaries before continuing to export.';}
@@ -38,7 +38,7 @@
     document.querySelectorAll('[data-view]').forEach(button=>button.setAttribute('aria-current',button.dataset.view===view?'page':'false'));
     document.querySelectorAll('#railCourses button').forEach(button=>button.setAttribute('aria-current',!$('courseStudio').hidden&&button.dataset.course===$('course').value?'page':'false'));
     const target=view==='workspace'?$('instituteTitle'):view==='import'?$('setupTitle'):$('courseTitle');
-    target.setAttribute('tabindex','-1');target.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});
+    if(focusHeading){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}window.scrollTo({top:0,behavior:'instant'});
   }
   function switchWorkspace(id) {
     if(!workspaces.has(id)||id===activeId)return;
@@ -112,5 +112,5 @@
   });
   $('course').addEventListener('change',()=>{$('flowStatus').textContent='Step 1: review the students in this course, then continue to analysis.';setView('students');});
   $('changedOnly').addEventListener('change',()=>{if($('changedOnly').checked){setView('students');$('flowStatus').textContent='Showing students affected by your current boundary changes. Continue to Analysis when you finish reviewing.';}});
-  renderHub();setView('workspace');
+  renderHub();setView('workspace', false);
 })();
