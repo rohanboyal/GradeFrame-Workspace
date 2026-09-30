@@ -31,7 +31,7 @@ Browser harnesses capture generated export blobs to check their contents. These 
 
 Tests are in `tests/workspace-checks.html`, `tests/fixed-checks.html`, and `tests/advanced-checks.html`. Results are in `docs/workspace-tests.txt` and `docs/workspace-regressions.txt`.
 
-The inherited challenge documents describe the primary submission. This experiment has not been deployed, uploaded to GitHub, or selected as the final submission.
+The inherited challenge documents describe the primary submission. This experiment has its own GitHub repository: https://github.com/rohanboyal/GradeFrame-Workspace. Deployment and final submission selection are pending.
 
 ## Experience refinements
 
