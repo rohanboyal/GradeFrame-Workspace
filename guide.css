@@ -1,0 +1,33 @@
+#welcomeGuide { max-width:610px; padding:26px 32px; border-radius:24px; border:1px solid #dfe8db; background:#fdfefb; box-shadow:0 30px 100px #0c2b3b55; }
+#welcomeGuide::backdrop { background:#102c32a6; backdrop-filter:blur(6px); }
+#welcomeGuide .guide-top .eyebrow { letter-spacing:2px; color:#466047; }
+#welcomeGuide .guide-top .text-button { border:1px solid #dae4d5; border-radius:30px; padding:8px 14px; min-height:36px; font-size:11px; }
+.guide-steps { display:flex; gap:7px; margin:16px 0 20px; }
+.guide-steps i { flex:1; height:4px; border-radius:8px; background:#e4e9df; }
+.guide-steps .complete { background:#32785d; }
+.guide-visual { background:radial-gradient(ellipse at top right,#d7eeba,transparent 70%),#e9f0e3; border:1px solid #e0e8d8; border-radius:17px; padding:22px 30px; height:208px; display:grid; align-items:center; }
+.mini-file,.mini-chart,.mini-compare { width:100%; }
+.mini-tag { display:block; font-size:8px; letter-spacing:1.7px; color:#496348; margin-bottom:12px; }
+.mini-file>strong { display:flex; align-items:center; justify-content:space-between; font-size:20px; letter-spacing:-.5px; color:#214833; }
+.mini-file>strong b { font-size:25px; }
+.mini-grid { display:grid; grid-template-columns:1.2fr 1fr .6fr; background:#ffffffb8; border:1px solid #ffffff; border-radius:9px; padding:10px 13px; margin:12px 0 0; gap:7px; font-size:9px; color:#395e46; }
+.mini-grid span { font-size:8px; color:#63765e; }.mini-grid b { font-weight:550; }
+.mini-label { font-size:9px; color:#4f694e; margin-top:12px; }
+.mini-bars { display:flex; height:110px; align-items:flex-end; gap:10px; border-bottom:1px solid #b2c6aa; }
+.mini-bars i { flex:1; height:var(--h); border-radius:6px 6px 0 0; background:#9fbe87; transform-origin:bottom; }
+.mini-bars i:nth-child(4),.mini-bars i:nth-child(5) { background:#347357; }
+.mini-pair { display:flex; align-items:center; justify-content:space-around; gap:14px; }
+.mini-pair>div { background:#ffffffac; border:1px solid white; border-radius:12px; padding:12px 20px; flex:1; }
+.mini-pair small,.mini-pair span { display:block; font-size:9px; color:#536e4d; }.mini-pair small { letter-spacing:1px; font-size:8px; }.mini-pair strong { font-size:36px; line-height:1.25; color:#24533a; }
+.mini-check { background:#2e7053; color:white; border-radius:50%; width:30px; height:30px; display:grid; place-items:center; font-size:16px; }
+.mini-checklist { display:grid; gap:9px; font-size:11px; margin-top:14px; color:#335a3c; }
+#welcomeGuide #guideProgress { color:#518062; font-weight:650; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin:21px 0 10px; }
+#welcomeGuide #guideTitle { font-size:29px; letter-spacing:-1px; }
+#welcomeGuide #guideDescription { min-height:0; font-size:12px; line-height:1.75; margin:12px 0; }
+#welcomeGuide #guideExample { background:transparent; border:0; border-top:1px solid #e1e8db; border-radius:0; padding:12px 0 0; font-size:11px; color:#596e57; }
+#welcomeGuide .guide-footnote { font-size:9px; margin:15px 0 0; color:#667860; }
+#welcomeGuide .dialog-actions { margin-top:18px; gap:12px; }
+#welcomeGuide .primary { background:#244e3a; color:#f5fbe9; border-radius:12px; padding:14px 20px; }
+#welcomeGuide .secondary { background:transparent; border:0; font-size:12px; }
+@media(prefers-reduced-motion:no-preference) { .guide-steps i { transition:background-color 220ms ease; }.mini-bars i { animation:grow-up 450ms ease-out; } }
+@media(max-width:480px) { #welcomeGuide { padding:19px; border-radius:20px; }.guide-visual { height:170px; padding:15px 18px; }.mini-bars { height:80px; }#welcomeGuide #guideTitle { font-size:24px; }.mini-file>strong { font-size:17px; }.mini-pair>div { padding:10px 12px; }.mini-pair strong { font-size:29px; }#welcomeGuide .primary { font-size:11px; padding:12px 14px; } }

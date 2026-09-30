@@ -1,0 +1,25 @@
+PASS Reset disabled before a course is loaded
+PASS Empty statistics display a dash
+PASS Excel picker accepts required .xlsx
+PASS Unique course list
+PASS Correct min/max/mean/median
+PASS Export blocked without instructor
+PASS Valid export enabled
+PASS Coverage endpoints cannot be edited
+PASS Single-mark band accepted and adjacent maximum updated
+PASS Impact preview shows affected student
+PASS Affected-student filter
+PASS Undo restores previous bands
+PASS Overlapping or reversed ranges block export
+PASS Reset restores valid export
+PASS Blank boundary blocks export
+PASS Clearing instructor disables export again
+PASS Invalid workbook reports issues and keeps previous valid data
+PASS Replacement clears old courses and refreshes statistics
+PASS Identical marks have finite zero deviation
+PASS Corrupt workbook handled
+PASS Export review includes complete course count
+PASS Filtered preview still exports all four students
+PASS Export completes and closes review
+
+RESULT: 23 passed; 0 failed.

@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Institute workspace checks</title>
+<style>body{font:15px system-ui;margin:24px;background:#f5f7fa;color:#18233a}button{padding:12px}pre{white-space:pre-wrap;padding:20px;background:white}iframe{width:100%;height:600px;border:1px solid #ccc}</style>
+<h1>Institute workspace verification</h1><button id="run">Run workspace checks</button><pre id="results">Ready.</pre><iframe id="app" src="../index.html"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const out=document.querySelector('#results');out.textContent='';let passed=0,failed=0;
+ const frame=document.querySelector('#app'),w=frame.contentWindow,d=w.document,$=id=>d.getElementById(id);
+ const check=(name,condition)=>{out.textContent+=`${condition?'PASS':'FAIL'} ${name}\n`;condition?passed++:failed++;};
+ const input=(id,value)=>{$(id).value=value;$(id).dispatchEvent(new w.Event('input'));};
+ const change=(id,value)=>{$(id).value=value;$(id).dispatchEvent(new w.Event('change'));};
+ const workspace=(name,term,edit=false)=>{$(edit?'editWorkspace':'newWorkspace').click();input('workspaceName',name);input('workspaceTerm',term);$('workspaceForm').requestSubmit();};
+ const head=['BITS ID','Course','Total Marks'];
+ const file=matrix=>{const wb=w.XLSX.utils.book_new();w.XLSX.utils.book_append_sheet(wb,w.XLSX.utils.aoa_to_sheet(matrix),'Marks');return new w.File([w.XLSX.write(wb,{type:'array',bookType:'xlsx'})],'fixture.xlsx');};
+ let originalCreate=w.URL.createObjectURL,originalClick=w.HTMLAnchorElement.prototype.click,lastBlob,lastName;
+ try {
+ check('Initial workspace starts empty', $('instituteRecords').textContent==='0'&&!$('workspaceHub').hidden&&$('courseStudio').hidden);
+ $('hubImport').click();check('Import has its own focused view',!$('importView').hidden&&$('courseStudio').hidden&&$('workspaceHub').hidden);
+ d.querySelector('#importView [data-view="workspace"]').click();
+ $('startTour').click();check('Walkthrough opens at first step',$('workspaceTour').open&&$('tourBack').disabled);
+ $('tourNext').click();$('tourBack').click();check('Walkthrough supports next and back',$('tourProgress').textContent==='STEP 1 OF 4');
+ for(let i=0;i<4;i++)$('tourNext').click();check('Completing walkthrough dismisses session introduction',!$('workspaceTour').open&&$('firstSteps').hidden);
+ $('mobileTour').click();$('skipTour').click();check('Guide can reopen and be skipped',!$('workspaceTour').open);
+ workspace('North Campus','Term 1',true);check('Institute can be renamed', $('instituteTitle').textContent==='North Campus');
+ await w.importFile(file(w.sampleMatrix()));
+ check('Successful import automatically opens students',d.body.dataset.view==='students'&&$('flowStatus').textContent.includes('66 records imported'));
+ check('Overview counts unique IDs separately from course records',$('instituteStudents').textContent==='50'&&$('instituteCourses').textContent==='2'&&$('instituteRecords').textContent==='66');
+ $('courseCards').querySelector('button').click();
+ check('Course card opens its student list',d.body.dataset.view==='students'&&$('count').textContent==='50');
+ d.querySelector('.workspace-tabs [data-view="analysis"]').click();
+ check('Analysis navigation keeps selected course',d.body.dataset.view==='analysis'&&$('course').value==='Foundations of Computing');
+ $('courseNext').click();check('Next step opens review and export',d.body.dataset.view==='decision'&&w.getComputedStyle($('decisionIdentity')).display!=='none'&&w.getComputedStyle($('review')).display==='none');
+ $('courseNext').click();check('Review returns to student list',d.body.dataset.view==='students'&&w.getComputedStyle($('review')).display!=='none');
+ check('Course sidebar is populated',$('railCourses').querySelectorAll('button').length===2);
+ change('course','Mathematics I');check('Changing courses starts at student review',d.body.dataset.view==='students'&&$('course').value==='Mathematics I');change('course','Foundations of Computing');
+ input('band-0-0','');d.querySelector('.workspace-tabs [data-view="decision"]').click();check('Invalid boundaries route back to analysis',d.body.dataset.view==='analysis'&&$('flowStatus').textContent.includes('boundaries'));$('reset').click();
+ input('instructor','North Instructor');input('band-0-0','85');input('decisionNotes','North decision');input('scenarioName','North review');$('saveScenario').click();input('search','DEMO001');
+ workspace('South Campus','Term 1');
+ check('New institute starts without marks, notes or snapshots',$('instituteRecords').textContent==='0'&&$('instructor').value===''&&$('decisionNotes').value===''&&$('baselineSelect').options.length===1);
+ await w.importFile(file([head,['S001','Foundations of Computing',65]]));input('instructor','South Instructor');input('band-0-0','90');input('decisionNotes','South decision');
+ change('workspaceSelect','workspace-1');
+ check('Switch restores first institute and original workbook',$('instituteRecords').textContent==='66'&&$('instructor').value==='North Instructor');
+ check('Boundaries, snapshots, notes and filters survive switching',$('band-0-0').value==='85'&&$('baselineSelect').options.length===2&&$('decisionNotes').value==='North decision'&&$('search').value==='DEMO001');
+ $('undo').click();check('Undo history belongs to its institute',$('band-0-0').value==='80');
+ change('workspaceSelect','workspace-2');check('Identical course names have independent grades and notes',$('band-0-0').value==='90'&&$('decisionNotes').value==='South decision'&&$('count').textContent==='1');
+ await w.importFile(file([head,['bad','Bad',101]]));
+ check('Failed import stays on error review',d.body.dataset.view==='import'&&!$('uploadErrors').hidden);
+ check('Invalid replacement retains selected institute data',$('course').value==='Foundations of Computing'&&!$('uploadErrors').hidden);
+ change('workspaceSelect','workspace-1');check('Upload errors do not leak to other institutes',$('uploadErrors').hidden);
+ change('workspaceSelect','workspace-2');check('Upload errors restore with their institute',!$('uploadErrors').hidden&&$('uploadErrors').textContent.includes('101'));
+ w.URL.createObjectURL=blob=>{lastBlob=blob;return originalCreate.call(w.URL,blob);};w.HTMLAnchorElement.prototype.click=function(){lastName=this.download;};
+ $('downloadIssues').click();check('Error export retains the original invalid row',(await lastBlob.text()).includes('bad | Bad | 101'));
+ await w.importFile(file([head,['S002','Physics',73]]));
+ check('Valid replacement resets only selected workspace',$('course').value==='Physics'&&$('decisionNotes').value===''&&$('band-0-0').value==='80');
+ $('report').click();check('Report includes institute context',(await lastBlob.text()).includes('South Campus')&&lastName.startsWith('South-Campus'));
+ $('export').click();$('confirmExport').click();const csv=await lastBlob.text();check('CSV contains only selected institute and course',csv.includes('S002')&&!csv.includes('DEMO')&&lastName.startsWith('South-Campus'));
+ $('export').click();$('confirmExcel').click();
+ const exported=w.XLSX.read(await lastBlob.arrayBuffer(),{type:'array',cellStyles:true});
+ check('Excel contains results and grading-details sheets',exported.SheetNames.join('|')==='Student results|Grading details');
+ const results=exported.Sheets['Student results'];
+ check('Excel exports the complete selected course',results.A2.v==='S002'&&results.C2.v===73&&results.D2.v==='A-'&&results['!ref']==='A1:G2');
+ check('Excel retains header filters and readable column widths',results['!autofilter'].ref==='A1:G2'&&results['!cols'][0].width>20);
+ check('Excel details identify the correct institute',exported.Sheets['Grading details'].B2.v.includes('South Campus'));
+ const safe=w.buildResultsWorkbook({rows:[{id:'0007',course:'Test',mark:0},{id:'=1+1',course:'Test',mark:100}],ranges:w.Grading.defaults(),baseline:w.Grading.defaults(),instructor:'=Tester',workspace:'Test',course:'Test',source:'fixture.xlsx',notes:'Checked',baselineName:'Default'});
+ const safeRead=w.XLSX.read(w.XLSX.write(safe,{type:'array',bookType:'xlsx'}),{type:'array'}).Sheets['Student results'];
+ check('Excel preserves text IDs and stores formula-like text literally',safeRead.A2.v==='0007'&&safeRead.A2.t==='s'&&safeRead.A3.v==='=1+1'&&!safeRead.A3.f&&!safeRead.G2.f);
+ change('workspaceSelect','workspace-1');check('Other institute survives replacement unchanged',$('instituteRecords').textContent==='66'&&$('decisionNotes').value==='North decision');
+ workspace('north campus','term 1');check('Duplicate institute and term rejected',$('workspaceDialog').open&&$('workspaceError').textContent.includes('already'));$('cancelWorkspace').click();
+ workspace('North Campus','Term 2');check('Same institute can have a separate term',$('workspaceSelect').options.length===3&&$('instituteRecords').textContent==='0');
+ const slow=file([head,['LATE','Delayed',55]]),buffer=await slow.arrayBuffer();let resolveImport;slow.arrayBuffer=()=>new Promise(resolve=>resolveImport=resolve);
+ const pending=w.importFile(slow);change('workspaceSelect','workspace-1');resolveImport(buffer);await pending;
+ check('Pending import cannot overwrite a different workspace',$('instituteRecords').textContent==='66'&&$('course').value==='Foundations of Computing');
+ change('workspaceSelect','workspace-3');check('Interrupted import stays cancelled in its original workspace',$('instituteRecords').textContent==='0'&&$('uploadStatus').textContent.includes('cancelled'));
+ w.URL.createObjectURL=originalCreate;w.HTMLAnchorElement.prototype.click=originalClick;
+ await new Promise(resolve=>{frame.onload=resolve;frame.src='../index.html?session-reset-test';});
+ check('Reload clears all institutes and student data',frame.contentDocument.getElementById('workspaceSelect').options.length===1&&frame.contentDocument.getElementById('instituteRecords').textContent==='0');
+ }catch(error){out.textContent+='HARNESS ERROR '+error.stack+'\n';failed++;}
+ finally{w.URL.createObjectURL=originalCreate;w.HTMLAnchorElement.prototype.click=originalClick;}
+ out.textContent+=`\nRESULT: ${passed} passed; ${failed} failed.`;
+};
+</script></html>

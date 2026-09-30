@@ -1,0 +1,30 @@
+PASS Named snapshot is selected as baseline
+PASS Live edit compares with immutable saved baseline
+PASS Second snapshot captured independently
+PASS Switching baseline does not overwrite draft
+PASS Other course has independent snapshots
+PASS Course returns to saved comparison and notes
+PASS Apply baseline restores current boundaries
+PASS Applying baseline can be undone
+PASS Unfinished invalid edit survives course switching and blocks export
+PASS Boundary review finds both sides of 80
+PASS Narrowing boundary tolerance updates results
+PASS Clear filters restores full course
+PASS Duplicate snapshot name is rejected
+PASS Snapshot limit is enforced
+PASS Grading report includes notes and full course despite filters
+PASS Invalid upload review displays row numbers and original values
+PASS Error CSV contains both bad records
+PASS Failed replacement retains valid course and snapshots
+PASS Legacy XLS reads correctly
+PASS Successful replacement clears previous scenarios
+PASS Formula workbook rejected
+PASS Reordered headers and blank row preserve text IDs
+PASS Latest rapid upload wins
+PASS 10000-row workbook is fully counted and preview paginated
+INFO large import and render 511 ms
+PASS Large workbook pagination advances
+PASS Large course export contains every record
+PASS 10001-row workbook rejected without replacing data
+
+RESULT: 27 passed; 0 failed.

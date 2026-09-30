@@ -1,0 +1,65 @@
+@keyframes settle-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes grow-up {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes grow-across {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro, .setup, .stats, .analysis-grid, .comparison, .results,
+  .decision-notes, .export-bar {
+    animation: settle-in 420ms cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .setup { animation-delay: 60ms; }
+  .stats { animation-delay: 100ms; }
+  .analysis-grid { animation-delay: 140ms; }
+
+  .hero-bars i, .hist-column .bar {
+    transform-origin: bottom;
+    animation: grow-up 420ms cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .hero-bars i:nth-child(even) { animation-delay: 70ms; }
+  .hero-bars i:nth-child(3n) { animation-delay: 130ms; }
+  .compare-track i {
+    transform-origin: left;
+    animation: grow-across 280ms ease-out;
+  }
+
+  button, .rail nav a, input, select, textarea, .scenario-card {
+    transition: background-color 160ms ease, border-color 160ms ease,
+      box-shadow 160ms ease, transform 160ms ease;
+  }
+  button:enabled:active { transform: translateY(1px); }
+  dialog[open] { animation: settle-in 200ms ease-out; }
+  dialog[open]::backdrop { animation: backdrop-in 200ms ease-out; }
+  @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .primary:enabled:hover, .secondary:enabled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px #173f3618;
+  }
+  .rail nav a:hover { transform: translateX(3px); }
+  .scenario-card:hover { border-color: #a6bea9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media print {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

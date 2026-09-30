@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>GradeFrame extended browser checks</title>
+<style>body{font:15px system-ui;margin:24px;background:#f5f7fa;color:#18233a}button{padding:12px}pre{white-space:pre-wrap;padding:20px;background:white}iframe{width:100%;height:600px;border:1px solid #ccc}</style>
+<h1>Extended browser verification</h1><button id="run">Run advanced checks</button><pre id="results">Ready.</pre><iframe id="app" src="../index.html"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const out=document.querySelector('#results');out.textContent='';let passed=0,failed=0;
+ const w=document.querySelector('#app').contentWindow,d=w.document;
+ const check=(name,condition)=>{out.textContent+=`${condition?'PASS':'FAIL'} ${name}\n`;condition?passed++:failed++;};
+ const change=(id,value)=>{d.getElementById(id).value=value;d.getElementById(id).dispatchEvent(new w.Event('change'));};
+ const input=(id,value)=>{d.getElementById(id).value=value;d.getElementById(id).dispatchEvent(new w.Event('input'));};
+ const head=['BITS ID','Course','Total Marks'];
+ const base=[head,['001','A',0],['002','A',78],['003','A',80],['004','A',82],['005','A',100],['006','B',50]];
+ const makeFile=(matrix,name='fixture.xlsx',type='xlsx',modify)=>{const wb=w.XLSX.utils.book_new(),sheet=w.XLSX.utils.aoa_to_sheet(matrix);if(modify)modify(sheet);w.XLSX.utils.book_append_sheet(wb,sheet,'Marks');return new w.File([w.XLSX.write(wb,{type:'array',bookType:type})],name);};
+ let originalCreate=w.URL.createObjectURL,originalClick=w.HTMLAnchorElement.prototype.click,lastBlob;
+ try{
+ await w.importFile(makeFile(base));input('instructor','Tester');
+ input('scenarioName','Original plan');d.getElementById('saveScenario').click();
+ check('Named snapshot is selected as baseline',d.getElementById('baselineSelect').selectedOptions[0].textContent==='Original plan');
+ input('band-0-0','85');check('Live edit compares with immutable saved baseline',d.getElementById('lowerCount').textContent==='2'&&d.getElementById('sameCount').textContent==='3');
+ input('scenarioName','Stricter A');d.getElementById('saveScenario').click();check('Second snapshot captured independently',d.getElementById('sameCount').textContent==='5');
+ change('baselineSelect','snapshot-1');check('Switching baseline does not overwrite draft',d.getElementById('band-0-0').value==='85'&&d.getElementById('lowerCount').textContent==='2');
+ input('decisionNotes','Reviewed assessment coverage.');change('course','B');check('Other course has independent snapshots',d.getElementById('baselineSelect').options.length===1);
+ change('course','A');check('Course returns to saved comparison and notes',d.getElementById('baselineSelect').value==='snapshot-1'&&d.getElementById('decisionNotes').value==='Reviewed assessment coverage.');
+ d.getElementById('applyBaseline').click();check('Apply baseline restores current boundaries',d.getElementById('band-0-0').value==='80');
+ d.getElementById('undo').click();check('Applying baseline can be undone',d.getElementById('band-0-0').value==='85');
+ input('band-0-0','');change('course','B');change('course','A');check('Unfinished invalid edit survives course switching and blocks export',d.getElementById('band-0-0').value===''&&d.getElementById('export').disabled);
+ d.getElementById('reset').click();d.getElementById('nearOnly').checked=true;change('tolerance','2');check('Boundary review finds both sides of 80',d.getElementById('resultCount').textContent==='3 of 5 students');
+ change('tolerance','1');check('Narrowing boundary tolerance updates results',d.getElementById('resultCount').textContent==='1 of 5 students');
+ d.getElementById('clearFilters').click();check('Clear filters restores full course',d.getElementById('resultCount').textContent==='5 of 5 students');
+ input('scenarioName','Original plan');d.getElementById('saveScenario').click();check('Duplicate snapshot name is rejected',d.getElementById('scenarioStatus').textContent.includes('already used'));
+ for(let i=0;i<3;i++){input('scenarioName','Plan '+i);d.getElementById('saveScenario').click();}check('Snapshot limit is enforced',d.getElementById('saveScenario').disabled&&d.getElementById('baselineSelect').options.length===6);
+ w.URL.createObjectURL=blob=>{lastBlob=blob;return originalCreate.call(w.URL,blob);};w.HTMLAnchorElement.prototype.click=function(){};
+ input('search','001');d.getElementById('report').click();let report=await lastBlob.text();check('Grading report includes notes and full course despite filters',report.includes('Reviewed assessment coverage.')&&report.includes('005')&&report.includes('Scenario comparison'));
+ await w.importFile(makeFile([head,['ID','A','bad'],['ID2','A',101]]));check('Invalid upload review displays row numbers and original values',d.getElementById('uploadErrors').textContent.includes('bad')&&d.getElementById('uploadErrors').textContent.includes('101'));
+ d.getElementById('downloadIssues').click();check('Error CSV contains both bad records', (await lastBlob.text()).includes('ID2 | A | 101'));
+ check('Failed replacement retains valid course and snapshots',d.getElementById('count').textContent==='5'&&d.getElementById('baselineSelect').options.length===6);
+ await w.importFile(makeFile(base,'legacy.xls','biff8'));check('Legacy XLS reads correctly',d.getElementById('count').textContent==='5'&&d.getElementById('uploadStatus').textContent.includes('legacy.xls'));
+ check('Successful replacement clears previous scenarios',d.getElementById('baselineSelect').options.length===1);
+ await w.importFile(makeFile(base,'formula.xlsx','xlsx',sheet=>sheet.C2={t:'n',v:80,f:'40+40'}));check('Formula workbook rejected',d.getElementById('uploadErrors').textContent.includes('Formula cells'));
+ await w.importFile(makeFile([['Course','Total Marks','BITS ID'],['A',80,'0007'],['','',''],['A',90,'0008']]));check('Reordered headers and blank row preserve text IDs',d.getElementById('count').textContent==='2'&&d.getElementById('studentRows').textContent.includes('0007'));
+ const slow=makeFile([head,['slow','OLD',50]]),fast=makeFile([head,['fast','NEW',90]]),buffer=await slow.arrayBuffer();slow.arrayBuffer=()=>new Promise(resolve=>setTimeout(()=>resolve(buffer),150));
+ await Promise.all([w.importFile(slow),w.importFile(fast)]);check('Latest rapid upload wins',d.getElementById('course').value==='NEW'&&d.getElementById('mean').textContent==='90');
+ const large=[head,...Array.from({length:10000},(_,i)=>['ID'+i,'Large',i%101])];const start=performance.now();await w.importFile(makeFile(large));
+ check('10000-row workbook is fully counted and preview paginated',d.getElementById('count').textContent==='10000'&&d.getElementById('studentRows').rows.length===25);out.textContent+=`INFO large import and render ${Math.round(performance.now()-start)} ms\n`;
+ d.getElementById('next').click();check('Large workbook pagination advances',d.getElementById('pageInfo').textContent.startsWith('26–50'));
+ input('instructor','Tester');d.getElementById('export').click();d.getElementById('confirmExport').click();check('Large course export contains every record',(await lastBlob.text()).trim().split('\r\n').length===10001);
+ await w.importFile(makeFile([...large,['last','Large',1]]));check('10001-row workbook rejected without replacing data',d.getElementById('uploadErrors').textContent.includes('10,000')&&d.getElementById('count').textContent==='10000');
+ }catch(e){out.textContent+='HARNESS ERROR '+e.stack+'\n';failed++;}
+ finally{w.URL.createObjectURL=originalCreate;w.HTMLAnchorElement.prototype.click=originalClick;}
+ out.textContent+=`\nRESULT: ${passed} passed; ${failed} failed.`;
+};
+</script></html>

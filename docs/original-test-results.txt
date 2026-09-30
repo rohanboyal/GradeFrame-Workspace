@@ -1,0 +1,9 @@
+Reset before selecting course: Cannot set properties of null (setting 'value')
+Course options for one unique course: 4
+Displayed statistics: Min100 | Max0 | Avg50.00 | Median50
+Mark 100 uncovered: error="", export enabled=true
+Mark 0 uncovered: error="", export enabled=true
+Single-mark A band: Each grade must have Min < Max.
+Empty course statistics: Min | Max | AvgNaN | MedianNaN
+Second upload course options: Select a course to begin, Course A, Course A, Course A, Course A, Course B
+DONE: Original checks completed

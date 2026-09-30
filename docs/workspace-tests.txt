@@ -1,0 +1,42 @@
+PASS Initial workspace starts empty
+PASS Import has its own focused view
+PASS Walkthrough opens at first step
+PASS Walkthrough supports next and back
+PASS Completing walkthrough dismisses session introduction
+PASS Guide can reopen and be skipped
+PASS Institute can be renamed
+PASS Successful import automatically opens students
+PASS Overview counts unique IDs separately from course records
+PASS Course card opens its student list
+PASS Analysis navigation keeps selected course
+PASS Next step opens review and export
+PASS Review returns to student list
+PASS Course sidebar is populated
+PASS Changing courses starts at student review
+PASS Invalid boundaries route back to analysis
+PASS New institute starts without marks, notes or snapshots
+PASS Switch restores first institute and original workbook
+PASS Boundaries, snapshots, notes and filters survive switching
+PASS Undo history belongs to its institute
+PASS Identical course names have independent grades and notes
+PASS Failed import stays on error review
+PASS Invalid replacement retains selected institute data
+PASS Upload errors do not leak to other institutes
+PASS Upload errors restore with their institute
+PASS Error export retains the original invalid row
+PASS Valid replacement resets only selected workspace
+PASS Report includes institute context
+PASS CSV contains only selected institute and course
+PASS Excel contains results and grading-details sheets
+PASS Excel exports the complete selected course
+PASS Excel retains header filters and readable column widths
+PASS Excel details identify the correct institute
+PASS Excel preserves text IDs and stores formula-like text literally
+PASS Other institute survives replacement unchanged
+PASS Duplicate institute and term rejected
+PASS Same institute can have a separate term
+PASS Pending import cannot overwrite a different workspace
+PASS Interrupted import stays cancelled in its original workspace
+PASS Reload clears all institutes and student data
+
+RESULT: 40 passed; 0 failed.

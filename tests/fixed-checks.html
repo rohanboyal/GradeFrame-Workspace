@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>GradeFrame browser regression checks</title>
+<style>body{font:15px system-ui;margin:24px;background:#f5f7fa;color:#18233a}button{padding:12px}pre{white-space:pre-wrap;padding:20px;background:white}iframe{width:100%;height:750px;border:1px solid #ccc}</style>
+<h1>GradeFrame: browser regression checks</h1><p>Uses real XLSX fixtures through the application importer. Synthetic student records only.</p><button id="run">Run fixed-app checks</button><pre id="results">Ready.</pre><iframe id="app" src="../index.html"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const out=document.querySelector('#results');out.textContent='';let passed=0,failed=0;
+ const w=document.querySelector('#app').contentWindow,d=w.document;
+ const check=(name,condition)=>{out.textContent+=`${condition?'PASS':'FAIL'} ${name}\n`;condition?passed++:failed++;};
+ const upload=async name=>{const blob=await(await fetch(name+'.xlsx')).blob();await w.importFile(new w.File([blob],name+'.xlsx'));};
+ const change=(id,value)=>{d.getElementById(id).value=value;d.getElementById(id).dispatchEvent(new w.Event('change'));};
+ try{
+ check('Reset disabled before a course is loaded',d.getElementById('reset').disabled);
+ check('Empty statistics display a dash',d.getElementById('mean').textContent==='—');
+ check('Excel picker accepts required .xlsx',d.getElementById('file').accept.includes('.xlsx'));
+ await upload('boundaries');
+ check('Unique course list',d.getElementById('course').options.length===1);
+ check('Correct min/max/mean/median',d.getElementById('minimum').textContent==='Min 0'&&d.getElementById('maximum').textContent==='Max 100'&&d.getElementById('mean').textContent==='50'&&d.getElementById('median').textContent==='50');
+ check('Export blocked without instructor',d.getElementById('export').disabled);
+ d.getElementById('instructor').value='Tester';d.getElementById('instructor').dispatchEvent(new w.Event('input'));
+ check('Valid export enabled',!d.getElementById('export').disabled);
+ check('Coverage endpoints cannot be edited',d.getElementById('band-0-1').disabled&&d.getElementById('band-7-0').disabled);
+ change('band-0-0','100');
+ check('Single-mark band accepted and adjacent maximum updated',d.getElementById('rangeError').textContent===''&&d.getElementById('band-1-1').value==='99');
+ check('Impact preview shows affected student',d.getElementById('impactText').textContent.startsWith('1 of 4'));
+ d.getElementById('changedOnly').checked=true;d.getElementById('changedOnly').dispatchEvent(new w.Event('change'));
+ check('Affected-student filter',d.getElementById('studentRows').rows.length===1&&d.getElementById('studentRows').textContent.includes('TEST003'));
+ d.getElementById('changedOnly').checked=false;d.getElementById('changedOnly').dispatchEvent(new w.Event('change'));
+ d.getElementById('undo').click();check('Undo restores previous bands',d.getElementById('band-0-0').value==='80');
+ change('band-0-0','60');check('Overlapping or reversed ranges block export',!!d.getElementById('rangeError').textContent&&d.getElementById('export').disabled);
+ d.getElementById('reset').click();check('Reset restores valid export',!d.getElementById('export').disabled);
+ change('band-0-0','');check('Blank boundary blocks export',d.getElementById('export').disabled);d.getElementById('reset').click();
+ d.getElementById('instructor').value='';d.getElementById('instructor').dispatchEvent(new w.Event('input'));check('Clearing instructor disables export again',d.getElementById('export').disabled);
+ await upload('invalid');check('Invalid workbook reports issues and keeps previous valid data',!d.getElementById('uploadErrors').hidden&&d.getElementById('count').textContent==='4');
+ await upload('replacement');check('Replacement clears old courses and refreshes statistics',d.getElementById('course').options.length===1&&d.getElementById('course').value==='Course B'&&d.getElementById('mean').textContent==='65');
+ await upload('identical');check('Identical marks have finite zero deviation',d.getElementById('spread').textContent==='Standard deviation 0');
+ await w.importFile(new w.File(['broken'],'broken.xlsx'));check('Corrupt workbook handled',d.getElementById('uploadErrors').textContent.includes('not a supported Excel'));
+ await upload('boundaries');
+ d.getElementById('instructor').value='Tester';d.getElementById('instructor').dispatchEvent(new w.Event('input'));
+ let exportedBlob;const originalCreate=w.URL.createObjectURL;w.URL.createObjectURL=blob=>{exportedBlob=blob;return originalCreate.call(w.URL,blob);};const originalClick=w.HTMLAnchorElement.prototype.click;w.HTMLAnchorElement.prototype.click=function(){};
+ d.getElementById('search').value='TEST001';d.getElementById('search').dispatchEvent(new w.Event('input'));
+ d.getElementById('export').click();check('Export review includes complete course count',d.getElementById('exportDialog').open&&d.getElementById('exportDetails').textContent.includes('4 students'));
+ d.getElementById('confirmExport').click();
+ const csv=await exportedBlob.text();check('Filtered preview still exports all four students',csv.includes('TEST001')&&csv.includes('TEST004')&&csv.trim().split('\r\n').length===5);
+ w.URL.createObjectURL=originalCreate;w.HTMLAnchorElement.prototype.click=originalClick;
+ check('Export completes and closes review',!d.getElementById('exportDialog').open&&d.getElementById('exportStatus').textContent.includes('4 students'));
+ }catch(e){out.textContent+='HARNESS ERROR '+e.stack+'\n';failed++;}
+ out.textContent+=`\nRESULT: ${passed} passed; ${failed} failed.`;
+};
+</script></html>
+

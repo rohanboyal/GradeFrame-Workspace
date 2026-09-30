@@ -1,0 +1,23 @@
+✔ every integer mark has exactly one default grade, including all boundaries (3.667ms)
+✔ missing endpoints, gaps, overlaps, blank values and reversed bands are rejected (1.6318ms)
+✔ valid single-mark bands are accepted (0.4062ms)
+✔ 500 deterministic partitions cover every mark exactly once (59.7823ms)
+✔ statistics handle empty, even, odd, identical and string-imported marks (4.4892ms)
+✔ workbook data rejects ambiguous and invalid records without silent rounding (0.9408ms)
+✔ header order, leading-zero IDs, whitespace and blank rows are handled (0.3598ms)
+✔ CSV round trip preserves commas, quotes, line breaks and Unicode (3.374ms)
+✔ export requires a name and data, and protects spreadsheet formula text (0.5361ms)
+✔ comparison conserves student counts and reports grade movement (2.909ms)
+✔ boundary review includes exact cutoffs and both sides of tolerance (0.764ms)
+✔ comparison refuses invalid ranges and does not mutate snapshots (0.7747ms)
+✔ error report preserves original row values and escapes spreadsheet formulas (5.3914ms)
+✔ grading report includes complete results and safely escapes untrusted text (1.692ms)
+✔ large comparison accounts for 10000 records without truncation (20.7772ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 571.793

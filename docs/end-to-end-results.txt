@@ -1,0 +1,22 @@
+27 September 2026 - Native browser workflow
+
+PASS Open native file chooser using keyboard interaction.
+PASS Select boundaries.xlsx (real XLSX fixture).
+PASS Four records imported into Course A.
+PASS Review export reports four students and Test Instructor.
+PASS Activate Download CSV and confirm Course-A-grades.csv was written to Downloads.
+PASS Independently reopen saved CSV using Python csv.DictReader with UTF-8 BOM handling.
+PASS Exact expected ID / mark / grade records:
+  TEST001 / 0 / E
+  TEST002 / 20 / D
+  TEST003 / 80 / A
+  TEST004 / 100 / A
+PASS Every exported record has Course A and Test Instructor.
+
+Browser download event capture timed out; filesystem verification confirmed the actual download succeeded.
+Desktop and 390px mobile viewport inspected; document width did not exceed the mobile viewport.
+Visible keyboard editing changed the A minimum to 85 and showed four affected students in the sample course.
+Switching to Mathematics I and back retained that course's adjusted boundaries.
+Keyboard Reset restored default boundaries and zero affected students.
+
+Public hosting verification is pending deployment.

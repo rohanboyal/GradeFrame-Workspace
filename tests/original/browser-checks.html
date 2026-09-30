@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>CodeForge original app verification</title>
+<style>body{font:16px system-ui;margin:24px;background:#f5f7fa;color:#18233a}button{padding:12px}pre{white-space:pre-wrap;padding:20px;background:white}iframe{width:100%;height:700px;border:1px solid #ccc}</style>
+<h1>Original app: reproducible browser checks</h1><p>Synthetic marks only. The iframe runs the unchanged supplied HTML. The harness supplies workbook files to its existing upload handler.</p>
+<button id="run">Run original checks</button><pre id="results">Ready.</pre><iframe id="app" src="original.html"></iframe>
+<script>
+const out=document.querySelector('#results');
+document.querySelector('#run').onclick=async()=>{
+ out.textContent=''; const w=document.querySelector('#app').contentWindow; const d=w.document;
+ const log=(name,result)=>out.textContent+=name+': '+result+'\n';
+ const delay=()=>new Promise(r=>setTimeout(r,150));
+ const upload=async name=>{const blob=await (await fetch(name+'.xlsx')).blob();w.document.querySelector('#file').onchange({target:{files:[new w.File([blob],name+'.xlsx')]}});await delay();};
+ try{
+ w.confirm=()=>true;
+ try{d.querySelector('#resetRanges').onclick();log('Reset before selecting course','No error');}catch(e){log('Reset before selecting course',e.message);}
+ d.querySelector('#instructor').value='Test Instructor';
+ await upload('boundaries');
+ log('Course options for one unique course',d.querySelector('#course').options.length-1);
+ d.querySelector('#course').value='Course A';d.querySelector('#course').onchange();
+ log('Displayed statistics',Array.from(d.querySelectorAll('.stat')).map(n=>n.textContent).join(' | '));
+ d.getElementById('Amax').value=99;w.updateAll();log('Mark 100 uncovered', 'error="'+d.querySelector('#rangeError').textContent+'", export enabled='+!d.querySelector('#download').disabled);
+ d.getElementById('Amax').value=100;d.getElementById('Emin').value=1;w.updateAll();log('Mark 0 uncovered','error="'+d.querySelector('#rangeError').textContent+'", export enabled='+!d.querySelector('#download').disabled);
+ d.getElementById('Emin').value=0;d.getElementById('Amin').value=100;d.getElementById('A-max').value=99;w.updateAll();log('Single-mark A band',d.querySelector('#rangeError').textContent);
+ d.querySelector('#course').value='';d.querySelector('#course').onchange();log('Empty course statistics',Array.from(d.querySelectorAll('.stat')).map(n=>n.textContent).join(' | '));
+ await upload('replacement');log('Second upload course options',Array.from(d.querySelector('#course').options).map(n=>n.textContent).join(', '));
+ log('DONE','Original checks completed');
+ }catch(e){log('HARNESS ERROR',e.stack);}
+};
+</script></html>
