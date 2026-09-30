@@ -1,6 +1,6 @@
-# GradeFrame — Workspace Experiment
+# GradeFrame
 
-A browser-based grading prototype for institute and term workspaces, maintained separately from the original GradeFrame project.
+A grading workspace for organising courses, reviewing student marks, comparing grade boundaries, and exporting clear results. Built for BITS Digital CodeForge V1.0.
 
 ## Workflow
 
@@ -31,7 +31,7 @@ Run `node --test tests/core.test.cjs tests/reports.test.cjs`. Serve the folder a
 
 The latest workspace/download suite passed 40 checks. The preceding flow revision passed 50 grading browser checks; 15 unchanged core/report tests also passed. Export contents were inspected; native Excel rendering and operating-system download saving have not been verified.
 
-See [experiment notes](WORKSPACE-EXPERIMENT.md). Earlier documents and screenshots in `docs/` are historical references for the original challenge project.
+See the [workflow notes](WORKSPACE-EXPERIMENT.md), [requirements audit](docs/requirements-audit.md), and [bug fix log](docs/CodeForge-Bug-Fix-Log.pdf).
 
 ## AI assistance
 
@@ -39,4 +39,4 @@ ChatGPT/Codex assisted with debugging, implementation, interface design, testing
 
 ## Status
 
-Experimental BITS Digital CodeForge prototype; not an official BITS grading tool. Deployment is pending. No shared accounts or cloud persistence. The vendored SheetJS license is included in `vendor/`.
+BITS Digital CodeForge challenge prototype; not an official BITS grading tool. Deployment is pending. No shared accounts or cloud persistence. The vendored SheetJS license is included in `vendor/`.

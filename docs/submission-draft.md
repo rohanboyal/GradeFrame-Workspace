@@ -1,28 +1,24 @@
 # CodeForge submission preparation
 
 ## Public app URL
-Pending deployment.
+https://rohanboyal.github.io/GradeFrame-Workspace/ (deployment verification pending)
 
 ## GitHub repository URL
-https://github.com/rohanboyal/GradeFrame — currently private. Ensure the evaluation team can access it before submitting. Website deployment remains off at the participant's request.
+https://github.com/rohanboyal/GradeFrame-Workspace
 
 ## AI tools used
-OpenAI ChatGPT / Codex assisted with understanding the original application, identifying and reproducing bugs, implementing changes, creating tests, and drafting documentation.
+ChatGPT/Codex assisted with debugging, implementation, interface design, testing, and documentation.
 
 ## Top three enhancements
-1. **Compare grading scenarios before applying them:** save named boundaries for each course, compare a draft with a saved baseline, see grade distribution changes and affected students, and undo changes.
-2. **Review data quality and boundary cases:** show spreadsheet errors alongside original row values with an error CSV, preserve valid data after failed imports, and identify students within one or two marks of a cutoff.
-3. **Keep an explainable decision record:** add instructor notes and export a standalone report with baseline and draft boundaries, grade movement and every student result. Reports can be printed to PDF; filtered previews never truncate course exports.
+1. **Institute workspaces with a guided grading workflow:** keep institutes and terms separate, review course and student counts, and follow Import → Students → Analysis → Review & export. Each workspace keeps its own data and grading decisions for the page session.
+2. **Compare grading decisions before exporting:** save named scenarios, compare boundaries and grade movement, inspect affected students and cutoff cases, and undo changes. This makes the consequences of each boundary change visible.
+3. **Exports that explain the results:** download Excel with column filters, preserved student IDs and a grading-details sheet; retain CSV compatibility; or export a printable report containing notes, boundaries, comparisons and every course result. On-screen filters never truncate the export.
+
+## Bug fix log
+Upload CodeForge-Bug-Fix-Log.pdf from this folder. It uses the required six-column table and records eight original defects.
 
 ## Learning reflection
-To be written with the participant after reviewing the code and test results. Possible topics to discuss: inclusive grade boundaries, validating spreadsheet inputs, separating logic from UI, testing known expected results, and handling CSV text safely. Do not submit these topics as personal learning claims until they reflect the participant's experience.
+To be written with the participant after reviewing the implementation. Discussion prompts: why endpoints 0 and 100 matter, how invalid imports preserve valid data, how workspace state stays separate, and how exports were tested. These are prompts, not claims about the participant's learning.
 
-## Participant fields and final declaration
-Name, BITS ID, phone, programme, experience rating and the final declaration are to be completed by the participant. The form permits only one response per individual and requires AI disclosure and consent to showcase the work.
-
-## Remaining checks before submission
-- Repeat a final upload and download on the public deployment.
-- When authorized, deploy the static app and arrange repository access for reviewers.
-- Test the public URL from a fresh browser session.
-- Review the bug log and reflect the final released version.
-- Complete the learning reflection and personal fields.
+## Participant fields
+Full name, BITS ID, phone, programme, learning reflection and experience rating remain pending. Complete the originality, AI disclosure and showcase declaration after reviewing its wording. Submit once using the BITS account.

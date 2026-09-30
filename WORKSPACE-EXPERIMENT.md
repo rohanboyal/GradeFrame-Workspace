@@ -1,6 +1,6 @@
-# GradeFrame institute workspace experiment
+# GradeFrame workspace guide
 
-This independent copy extends GradeFrame with institute workspaces. The primary project in `D:\Bits\outputs\codeforge` and its GitHub repository remain separate.
+GradeFrame organises course grading into institute and term workspaces.
 
 ## Workflow
 
@@ -31,7 +31,7 @@ Browser harnesses capture generated export blobs to check their contents. These 
 
 Tests are in `tests/workspace-checks.html`, `tests/fixed-checks.html`, and `tests/advanced-checks.html`. Results are in `docs/workspace-tests.txt` and `docs/workspace-regressions.txt`.
 
-The inherited challenge documents describe the primary submission. This experiment has its own GitHub repository: https://github.com/rohanboyal/GradeFrame-Workspace. Deployment and final submission selection are pending.
+The inherited challenge documents describe the primary submission. GitHub repository: https://github.com/rohanboyal/GradeFrame-Workspace. Deployment verification is pending.
 
 ## Experience refinements
 
