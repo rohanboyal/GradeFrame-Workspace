@@ -10,7 +10,7 @@ GradeFrame organises course grading into institute and term workspaces.
 4. Open a course card to review its student list. Follow Students → Analysis → Review & export. Importing has its own screen, and the sidebar lists available courses.
 5. Switch institutes using the top selector. Marks, instructor, boundaries, undo history, snapshots, notes, filters, and upload errors stay with their institute.
 
-All data is held in page memory. Refreshing or closing the page clears every workspace. There are no accounts, shared users, cloud storage, localStorage, or sessionStorage writes in the active app. This is a local prototype of the workspace workflow.
+All data is held in page memory. Refreshing or closing the page clears every workspace. There are no accounts, shared users, cloud storage, student-data writes to localStorage or sessionStorage. This is a local prototype of the workspace workflow.
 
 A successful replacement workbook resets the selected institute's grading decisions. An invalid upload keeps its last valid data. Switching institutes cancels an unfinished import. Reports include institute context; export filenames include the institute and term.
 
@@ -31,11 +31,11 @@ Browser harnesses capture generated export blobs to check their contents. These 
 
 Tests are in `tests/workspace-checks.html`, `tests/fixed-checks.html`, and `tests/advanced-checks.html`. Results are in `docs/workspace-tests.txt` and `docs/workspace-regressions.txt`.
 
-The inherited challenge documents describe the primary submission. GitHub repository: https://github.com/rohanboyal/GradeFrame-Workspace. Deployment verification is pending.
+The inherited challenge documents describe the primary submission. GitHub repository: https://github.com/rohanboyal/GradeFrame-Workspace. The public site is https://rohanboyal.github.io/GradeFrame-Workspace/.
 
 ## Experience refinements
 
-The overview now has a forest-green illustrated introduction, a direct sample-data action, course distribution previews, and course navigation in the sidebar. Students, Analysis, and Review & export each have a focused screen with a next-step action. The four-card walkthrough supports next, back, skip, and reopening from Quick guide. Its dismissal lasts for the page session; no browser storage is written.
+The overview now has a forest-green illustrated introduction, a direct sample-data action, course distribution previews, and course navigation in the sidebar. Students, Analysis, and Review & export each have a focused screen with a next-step action. The four-card walkthrough supports next, back, skip, and reopening from Quick guide. The guide opens automatically until it is completed or skipped. Only its dismissal preference is stored locally; student records remain temporary.
 
 Animations cover the introductory bars, course hover states, and walkthrough transitions. Reduced-motion preferences disable these effects. The revised overview, review screen, and guide were inspected at narrow widths down to 320px without document overflow. The latest 40 workspace/download checks pass alongside the 50 browser regressions passed for the flow revision and 15 unchanged core/report tests.
 

@@ -1,7 +1,7 @@
 # CodeForge submission preparation
 
 ## Public app URL
-https://rohanboyal.github.io/GradeFrame-Workspace/ (deployment verification pending)
+https://rohanboyal.github.io/GradeFrame-Workspace/
 
 ## GitHub repository URL
 https://github.com/rohanboyal/GradeFrame-Workspace
